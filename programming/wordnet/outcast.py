@@ -36,4 +36,3 @@ if __name__ == '__main__':
     while True:
         words = raw_input("Insert words:\n").strip().split(" ")
         print("Outcast=%s\n" % outcast.outcast(words))
-    

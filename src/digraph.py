@@ -1,33 +1,20 @@
 #!/usr/bin/env python
-from argparse import ArgumentParser
-from collections import deque
 
+from argparse import ArgumentParser
+
+from graph import Graph
 from dfs import DirectedDFS, DepthFirstOrder
 from dfs import TopologicalSort, KosarajuSharirSCC
 
 
-class Digraph(object):
+class Digraph(Graph):
     def __init__(self, V):
-        self.V = V
-        self.E = 0
-        self._adj = [deque() for i in range(V)]
+        super(Digraph, self).__init__(V)
 
-    def _validate_vertex(self, v):
-        assert v >= 0 and v < self.V
-
-    def add_edge(self, v, w):
-        self._validate_vertex(v)
-        self._validate_vertex(w)
+    def add_edge(self, v, w, **kwargs):
+        self._validate_vertex(v), self._validate_vertex(w)
         self.E += 1
-        self._adj[v].appendleft(w)
-
-    def adj(self, v):
-        self._validate_vertex(v)
-        return self._adj[v]
-
-    def degree(self, v):
-        self._validate_vertex(v)
-        return len(self._adj[v])
+        self._adj[v].append(w)
 
     def reverse(self):
         graph = Digraph(self.V)
@@ -35,24 +22,6 @@ class Digraph(object):
             for w in self.adj(v):
                 graph.add_edge(w, v)
         return graph
-
-    @staticmethod
-    def from_file(fname):
-        with open(fname, 'r') as f:
-            V = int(next(f))
-            graph = Digraph(V)
-            next(f)
-            for line in f:
-                v, w = line.strip().split()
-                graph.add_edge(int(v), int(w))
-        return graph
-
-    def __str__(self):
-        s = str(self.V) + " vertices, " + str(self.E) + " edges"
-        s += "\n"
-        for i, bag in enumerate(self._adj):
-            s += str(i) + ": " + " ".join([str(v) for v in bag]) + "\n"
-        return s
 
 
 class DirectedCycle(object):
@@ -174,7 +143,6 @@ if __name__ == '__main__':
     elif action == 'strongly_connected':
         delim = args['delim']
         sg = SymbolDigraph.from_file(fname, sep=delim)
-        digraph = sg.graph
-        scc = KosarajuSharirSCC(digraph)
-        for v in sorted([sg.name(x) for x in range(digraph.V)]):
+        scc = KosarajuSharirSCC(sg.graph)
+        for v in sorted([sg.name(x) for x in range(sg.graph.V)]):
             print("%s: %d" % (v, scc.ids[sg.int(v)]))

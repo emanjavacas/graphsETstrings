@@ -4,7 +4,7 @@ import signal
 import sys
 
 from src.bfs import BreadthFirstSearch
-from src.dag import Digraph
+from src.digraph import Digraph
 
 
 class SAP(object):

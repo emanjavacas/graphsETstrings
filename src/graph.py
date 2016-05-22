@@ -1,7 +1,5 @@
 # coding: utf-8
 
-from collections import deque
-
 from bfs import BreadthFirstSearch
 from dfs import DepthFirstPaths, DepthFirstSearch
 from cc import ConnectedComponents
@@ -13,17 +11,16 @@ class Graph(object):
     def __init__(self, V):
         self.V = V
         self.E = 0
-        self._adj = [deque() for i in range(V)]
+        self._adj = [list() for i in range(V)]
 
     def _validate_vertex(self, v):
         assert v >= 0 and v < self.V
 
-    def add_edge(self, v, w):
-        self._validate_vertex(v)
-        self._validate_vertex(w)
+    def add_edge(self, v, w, **kwargs):
+        self._validate_vertex(v), self._validate_vertex(w)
         self.E += 1
-        self._adj[w].appendleft(v)
-        self._adj[v].appendleft(w)
+        self._adj[w].append(v)
+        self._adj[v].append(w)
 
     def adj(self, v):
         self._validate_vertex(v)
@@ -33,15 +30,17 @@ class Graph(object):
         self._validate_vertex(v)
         return len(self._adj[v])
 
-    @staticmethod
-    def from_file(fname):
+    @classmethod
+    def from_file(cls, fname):
         with open(fname, 'r') as f:
             V = int(next(f))
-            graph = Graph(V)
+            graph = cls(V)
             next(f)
             for line in f:
-                v, w = line.strip().split()
-                graph.add_edge(int(v), int(w))
+                line = line.strip().split()
+                v, w, weight = line[0], line[1], line[2:]
+                weight = int(weight) if weight else 0
+                graph.add_edge(int(v), int(w), weight=weight)
         return graph
 
     def __str__(self):

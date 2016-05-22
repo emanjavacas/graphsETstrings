@@ -7,7 +7,7 @@ import sys
 
 from collections import defaultdict
 
-from src.dag import Digraph, DirectedCycle
+from src.digraph import Digraph, DirectedCycle
 from programming.wordnet.sap import SAP
 
 

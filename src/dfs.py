@@ -11,7 +11,7 @@ class DepthFirstSearch(object):
     def dfs(self, graph, source):
         self._count += 1
         self._marked[source] = True
-        for v in graph.adj[source]:
+        for v in graph.adj(source):
             if not self._marked[v]:
                 self.dfs(graph, v)
 
@@ -34,7 +34,7 @@ class DepthFirstPaths(object):
 
     def dfs(self, graph, v):
         self._marked[v] = True
-        for w in graph.adj[v]:
+        for w in graph.adj(v):
             if not self._marked[w]:
                 self.edge_to[w] = v
                 self.dfs(graph, w)
@@ -81,21 +81,21 @@ class Cycle(object):
 
 
 class DirectedDFS(object):
-    def __init__(self, dag, source):
-        self._marked = [False] * dag.V
-        self.dfs(dag, source)
+    def __init__(self, graph, source):
+        self._marked = [False] * graph.V
+        self.dfs(graph, source)
 
-    def dfs(self, dag, v):
+    def dfs(self, graph, v):
         self._marked[v] = True
-        for w in dag.adj(v):
+        for w in graph.adj(v):
             if not self._marked[w]:
-                self.dfs(dag, w)
+                self.dfs(graph, w)
 
     @classmethod
-    def from_sources(cls, dag, sources):
-        dfs = cls(dag, sources[0])
+    def from_sources(cls, graph, sources):
+        dfs = cls(graph, sources[0])
         for s in sources[1:]:
-            dfs.dfs(dag, s)
+            dfs.dfs(graph, s)
         return dfs
 
     def marked(self, v):
