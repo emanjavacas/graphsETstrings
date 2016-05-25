@@ -5,6 +5,7 @@ from argparse import ArgumentParser
 from graph import Graph
 from dfs import DirectedDFS, DepthFirstOrder
 from dfs import TopologicalSort, KosarajuSharirSCC
+from bfs import BreadthFirstSearch
 
 
 class Digraph(Graph):
@@ -18,7 +19,7 @@ class Digraph(Graph):
 
     def reverse(self):
         graph = Digraph(self.V)
-        for v in range(self.V):
+        for v in self.vertices():
             for w in self.adj(v):
                 graph.add_edge(w, v)
         return graph
@@ -26,21 +27,21 @@ class Digraph(Graph):
 
 class DirectedCycle(object):
     def __init__(self, digraph):
-        self._marked = [False] * digraph.V
+        self._marked = set()
         self.edge_to = [None] * digraph.V
         self.on_stack = [False] * digraph.V
         self.cycles = []
-        for v in range(digraph.V):
-            if not self._marked[v]:
+        for v in digraph.vertices():
+            if v not in self._marked:
                 self.dfs(digraph, v)
 
     def dfs(self, digraph, v):
         self.on_stack[v] = True
-        self._marked[v] = True
+        self._marked.add(v)
         for w in digraph.adj(v):
             if self.has_cycle():
                 return
-            if not self._marked[w]:
+            if w not in self._marked:
                 self.edge_to[w] = v
                 self.dfs(digraph, w)
             elif self.on_stack[w]:  # found cycle
@@ -107,7 +108,7 @@ if __name__ == '__main__':
     if action == 'directedDFS':
         graph = Digraph.from_file(fname)
         searcher = DirectedDFS.from_sources(graph, map(int, args['sources']))
-        print(" ".join([str(v) for v in range(graph.V) if searcher.marked(v)]))
+        print(" ".join([str(v) for v in graph.vertices() if searcher.marked(v)]))
 
     if action == 'cycle':
         graph = Digraph.from_file(fname)
@@ -124,7 +125,7 @@ if __name__ == '__main__':
         dfs_order = DepthFirstOrder(graph)
         print("   v  pre post")
         print("--------------")
-        for v in range(graph.V):
+        for v in graph.vertices():
             print("%4d %4d %4d" % (v, dfs_order.pre[v], dfs_order.post[v]))
         print("Preorder:")
         print(" ".join([str(v) for v in dfs_order.preorder]))
@@ -144,5 +145,20 @@ if __name__ == '__main__':
         delim = args['delim']
         sg = SymbolDigraph.from_file(fname, sep=delim)
         scc = KosarajuSharirSCC(sg.graph)
-        for v in sorted([sg.name(x) for x in range(sg.graph.V)]):
+        for v in sorted([sg.name(x) for x in sg.graph.vertices()]):
             print("%s: %d" % (v, scc.ids[sg.int(v)]))
+
+    elif action == 'BFSpath':
+        source = args['source']
+        graph = Digraph.from_file(fname)
+        paths = BreadthFirstSearch(graph, source)
+        for v in graph.vertices():
+            if paths.has_path(v):
+                print("%d to %d: " % (source, v) +
+                      " -> ".join([str(i) for i in paths.path_to(v)]))
+            else:
+                print("%d to %d: not connected" % (source, v))
+
+    if action == 'graph':
+        graph = Digraph.from_file(fname)
+        print(graph)

@@ -16,6 +16,9 @@ class Graph(object):
     def _validate_vertex(self, v):
         assert v >= 0 and v < self.V
 
+    def vertices(self):
+        return [v for v in range(self.V)]
+
     def add_edge(self, v, w, **kwargs):
         self._validate_vertex(v), self._validate_vertex(w)
         self.E += 1
@@ -106,7 +109,7 @@ if __name__ == '__main__':
         source = args['source']
         graph = Graph.from_file(fname)
         searcher = DepthFirstSearch(graph, source)
-        print(" ".join([str(v) for v in range(graph.V) if searcher.marked(v)]))
+        print(" ".join([str(v) for v graph.vertices() if searcher.marked(v)]))
         print("Connected" if searcher.connected() else "NOT Connected")
 
     # Path to vertex with DFS
@@ -114,7 +117,7 @@ if __name__ == '__main__':
         source = args['source']
         graph = Graph.from_file(fname)
         paths = DepthFirstPaths(graph, source)
-        for v in range(graph.V):
+        for v in graph.vertices():
             if paths.has_path(v):
                 print("%d to %d: " % (source, v) +
                       " -> ".join([str(i) for i in paths.path_to(v)]))
@@ -126,7 +129,7 @@ if __name__ == '__main__':
         source = args['source']
         graph = Graph.from_file(fname)
         paths = BreadthFirstSearch(graph, source)
-        for v in range(graph.V):
+        for v in graph.vertices():
             if paths.has_path(v):
                 print("%d to %d: " % (source, v) +
                       " -> ".join([str(i) for i in paths.path_to(v)]))

@@ -3,21 +3,21 @@
 
 class ConnectedComponents(object):
     def __init__(self, graph):
-        self._marked = [False] * graph.V
+        self._marked = set()
         self.ids = [None] * graph.V
         self.size = [0] * graph.V
         self._count = 0
         for v in range(graph.V):
-            if not self._marked[v]:
+            if v not in self._marked:
                 self.dfs(graph, v)
                 self._count += 1
 
     def dfs(self, graph, v):
-        self._marked[v] = True
+        self._marked.add(v)
         self.ids[v] = self._count
         self.size[self._count] += 1
         for w in graph.adj(v):
-            if not self._marked[w]:
+            if w not in self._marked:
                 self.dfs(graph, w)
 
     def connected(self, v, w):
@@ -30,7 +30,7 @@ class ConnectedComponents(object):
         return cs
 
     def marked(self, v):
-        return self._marked[v]
+        return v in self._marked
 
     def count(self):
         return self._count
