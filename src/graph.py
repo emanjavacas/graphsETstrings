@@ -4,8 +4,6 @@ from bfs import BreadthFirstSearch
 from dfs import DepthFirstPaths, DepthFirstSearch
 from cc import ConnectedComponents
 
-from argparse import ArgumentParser
-
 
 class Graph(object):
     def __init__(self, V):
@@ -42,7 +40,7 @@ class Graph(object):
             for line in f:
                 line = line.strip().split()
                 v, w, weight = line[0], line[1], line[2:]
-                weight = int(weight) if weight else 0
+                weight = float(weight[0]) if weight else 0.0
                 graph.add_edge(int(v), int(w), weight=weight)
         return graph
 
@@ -88,6 +86,8 @@ class SymbolGraph(object):
 
 
 if __name__ == '__main__':
+    from argparse import ArgumentParser
+    
     parser = ArgumentParser(description='graph main')
     parser.add_argument('action', default='graph')
     parser.add_argument('-f', '--fname')
@@ -109,7 +109,7 @@ if __name__ == '__main__':
         source = args['source']
         graph = Graph.from_file(fname)
         searcher = DepthFirstSearch(graph, source)
-        print(" ".join([str(v) for v graph.vertices() if searcher.marked(v)]))
+        print(" ".join([str(v) for v in graph.vertices() if searcher.marked(v)]))
         print("Connected" if searcher.connected() else "NOT Connected")
 
     # Path to vertex with DFS

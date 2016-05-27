@@ -24,7 +24,7 @@ class Edge(object):
         return cmp(self.weight, other.weight)
 
     def __str__(self):
-        pass
+        return "<%d -> %d; weight=%f>" % (self.v, self.w, self.weight)
 
 
 class EdgeWeightedGraph(Graph):
