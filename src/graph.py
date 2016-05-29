@@ -87,7 +87,7 @@ class SymbolGraph(object):
 
 if __name__ == '__main__':
     from argparse import ArgumentParser
-    
+
     parser = ArgumentParser(description='graph main')
     parser.add_argument('action', default='graph')
     parser.add_argument('-f', '--fname')

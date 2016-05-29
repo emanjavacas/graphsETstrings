@@ -27,8 +27,11 @@ class pqueue(object):
         self.d[v] = entry
         heapq.heappush(self.heap, entry)
 
+    def __len__(self):
+        return self.size
+
     def __contains__(self, v):
-        return v in [x for (_, x) in self.heap]
+        return v in self.d
 
     def _pop(self):
         k, v = heapq.heappop(self.heap)

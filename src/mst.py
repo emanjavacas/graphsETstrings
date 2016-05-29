@@ -2,13 +2,13 @@
 from Queue import PriorityQueue
 
 from src.pqueue import pqueue
-from src.edge_weighted_graph import EdgeWeightedGraph
+from src.weighted_graph import WeightedGraph
 from src.union_find import UnionFind
 
 
 class MST(object):
     def __init__(self, graph):
-        if not isinstance(graph, EdgeWeightedGraph):
+        if not isinstance(graph, WeightedGraph):
             raise ValueError("graph must be edge-weighted")
         self.graph = graph
         self.mst = []
@@ -133,7 +133,7 @@ if __name__ == '__main__':
 
     args = vars(parser.parse_args())
 
-    graph = EdgeWeightedGraph.from_file(args['fname'])
+    graph = WeightedGraph.from_file(args['fname'])
 
     if args['algorithm'] == 'kruskal':
         mst = KruskalMST(graph)

@@ -105,20 +105,21 @@ class DirectedDFS(object):
 class DepthFirstOrder(object):
     def __init__(self, graph):
         self._marked = set()
-        self.pre = [None] * graph.V
-        self.post = [None] * graph.V
-        self.preorder = []
-        self.postorder = []
+        self.pre, self.post = [None] * graph.V, [None] * graph.V
+        self.preorder, self.postorder = [], []
         for v in graph.vertices():
-            if v not in self._marked:
+            if not self.marked(v):
                 self.dfs(graph, v)
+
+    def marked(self, v):
+        return v in self._marked
 
     def dfs(self, graph, v):
         self._marked.add(v)
         self.pre[v] = len(self.preorder)
         self.preorder.append(v)
         for w in graph.adj(v):
-            if w not in self._marked:
+            if not self.marked(w):
                 self.dfs(graph, w)
         self.post[v] = len(self.postorder)
         self.postorder.append(v)
@@ -138,11 +139,11 @@ class TopologicalSort(object):
         if not cycle.has_cycle():
             searcher = DepthFirstOrder(graph)
             self.order = searcher.reverse_post()
-            self._rank = [i for i, v in sorted(enumerate(self.order),
-                                               key=lambda x: x[1])]
+            ranks = sorted(enumerate(self.order), key=lambda x: x[1])
+            self._rank = [i for i, v in ranks]
 
     def has_order(self):
-        return not self.order
+        return self.order is not None
 
     def rank(self, v):
         if self.has_order():

@@ -26,34 +26,38 @@ class Digraph(Graph):
 
 
 class DirectedCycle(object):
-    def __init__(self, digraph):
+    def __init__(self, graph):
         self._marked = set()
-        self.edge_to = [None] * digraph.V
-        self.on_stack = [False] * digraph.V
+        self._edge_to = [None] * graph.V
+        self._on_stack = [False] * graph.V
         self.cycles = []
-        for v in digraph.vertices():
-            if v not in self._marked:
-                self.dfs(digraph, v)
+        for v in graph.vertices():
+            if not self.marked(v):
+                self.dfs(graph, v)
 
-    def dfs(self, digraph, v):
-        self.on_stack[v] = True
+    def marked(self, v):
+        return v in self._marked
+
+    def dfs(self, graph, v):
+        self._on_stack[v] = True
         self._marked.add(v)
-        for w in digraph.adj(v):
+        for w in graph.adj(v):
             if self.has_cycle():
                 return
-            if w not in self._marked:
-                self.edge_to[w] = v
-                self.dfs(digraph, w)
-            elif self.on_stack[w]:  # found cycle
-                cycle = []
-                x = v
-                while x != w:
-                    cycle.append(x)
-                    x = self.edge_to[x]
-                cycle.append(w)
-                cycle.append(v)
-                self.cycles.append(cycle)
-            self.on_stack[v] = False
+            if not self.marked(w):
+                self._edge_to[w] = v
+                self.dfs(graph, w)
+            elif self._on_stack[w]:  # found cycle
+                self._find_cycle(v, w)
+        self._on_stack[v] = False
+
+    def _find_cycle(self, v, w):
+        cycle, x = [], v
+        while x != w:
+            cycle.append(x)
+            x = self._edge_to[x]
+        cycle.append(w), cycle.append(v)
+        self.cycles.append(cycle)
 
     def has_cycle(self):
         return bool(self.cycles)

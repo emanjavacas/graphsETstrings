@@ -27,9 +27,9 @@ class Edge(object):
         return "<%d -> %d; weight=%f>" % (self.v, self.w, self.weight)
 
 
-class EdgeWeightedGraph(Graph):
+class WeightedGraph(Graph):
     def __init__(self, V):
-        super(EdgeWeightedGraph, self).__init__(V)
+        super(WeightedGraph, self).__init__(V)
 
     def add_edge(self, v, w, weight):
         self._validate_vertex(v), self._validate_vertex(w)
