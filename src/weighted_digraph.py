@@ -15,6 +15,9 @@ class DirectedEdge(object):
     def target(self):
         return self.w
 
+    def __str__(self):
+        return "%d->%d (%.2f)" % (self.v, self.w, self.weight)
+
 
 class WeightedDigraph(Graph):
     def __init__(self, V):

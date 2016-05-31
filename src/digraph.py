@@ -62,6 +62,12 @@ class DirectedCycle(object):
     def has_cycle(self):
         return bool(self.cycles)
 
+    def cycle(self):
+        "returns last cycle"
+        if not self.has_cycle():
+            return []
+        return self.cycles[-1]
+
 
 class SymbolDigraph(object):
     def __init__(self, lines, sep=' '):
